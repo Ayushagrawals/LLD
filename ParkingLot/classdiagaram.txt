@@ -1,0 +1,139 @@
+class Building{
+    //one building has multiple floors and each floor has multiple spots;
+    //so has a relationships
+    List<Floor> floor;
+    Integer floorCount;
+    public Integer getFloorCount()
+    {
+        return this.floorCount;
+    }
+    public void setFloorCount(Integer floorcount)
+    {
+        this.floorCount=floorCount;
+    }
+    public void setFloor(Floor floor)
+    {
+        this.floor=floor;
+    }
+
+
+}
+
+class Floor{
+    //each floor has multiple parkingspot
+    List<Parkinglot> parkingLots=new ArrayList<ParkingLots>();
+    //HashMap<Integer,List<ParkingLot>> floorMap=new HashMap<>();
+   public void createFloor(int floorno)
+    {
+         for(int i=0;i<noOfParkingspot;i++)
+         {
+           Spot spot= createParkingSpot();
+           parkingLots.add(spot);
+         }
+    }
+    public List<getParkingLots> getParkingLots()
+    {
+        return this.parkingLots;  
+    }
+}
+class Building{
+    //each floor has multiple parkingspot
+    List<Floor> floor=new ArrayList<Floor>();
+    //HashMap<Integer,List<Floor>> floorMap=new HashMap<>();
+   public void createBuilding(int noOfFloor)
+    {
+         for(int i=0;i<noOfFloor;i++)
+         {
+           Floor (i)
+           parkingLots.add("Foor no "+id);
+
+         }
+         return parkingSpot;
+    }
+}
+enum ParkingSpotType{
+    Compact, Large, Handicapped, Bike, Electric
+}
+class parkingspot
+{
+    
+    String spottype;
+    String spotid;
+    List<Floor> floorlist;
+    boolean isSpotAvailable=true;
+    public String getSpotType()
+    {
+        return this.spotType;
+    }
+    public String checkSpotType(Vehicle vehicle)
+    {
+        //loop thorough parking and check if vehicle matching
+        public String checkSpot(ParkingSpot spot)
+        {
+                if(spot.getSpotType()==vehicle.getVehicleType)
+                {
+                    return spotId;
+                }
+                else return null;
+        }
+        
+        
+    }
+    public void bookspot()
+    {
+
+    }
+    public parkingspot createSpot()
+    {
+        Spot spot=new Spot();
+        spot.setSpotType("Compact);
+        spot.isSpotAvailable=false;
+        return spot;
+    }
+
+}
+interface Vehicle{
+    public Vehicle getVehicle(String vehicle);
+}
+Class Car implements Vehicle{
+    public Car getVehicle(){
+        return Car;
+    }
+}
+
+class Booking{
+    ParkingSpot spot=new ParkingSpot();
+    List<Floor> floorlist;
+    public boolean bookspot(VehicleType vehicle)
+    {
+         for(Floor floor:floorlist)
+        {
+            for(ParkingSpot spot:floor)
+            {
+                if(spot.isSpotAvailable(vehicle)!=null)
+                {
+                    parkingspot.setSpotAvailble(false);
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+    }
+    
+}
+}
+public class Solution{
+    public static void main(String[] args)
+    {
+        Building building=new Building();
+        builduing.setFloorCount(4);
+        int floorcount=building.getFloorCount();
+        for(int i=0;i<=4;i++)
+        {
+            Floor floor=new Floor(10)
+        }
+
+        builduing.setFloor(floor);
+    }
+}

@@ -1,0 +1,27 @@
+| Real App      | Matches This Design? | Notes                                               |
+|---------------|----------------------|-----------------------------------------------------|
+| RedBus        | ✅ Yes               | Buses from multiple vendors, seat selection, etc.   |
+| OYO           | ✅ Yes               | Hotel aggregator, third-party vendor integration.   |
+| IRCTC         | ✅ Yes               | Train search + booking + payment gateway flow.      |
+| Agoda         | ✅ Yes               | Hotel platform with multiple providers.             |
+| MakeMyTrip    | ✅ Yes               | Unified search + booking + payment system.          |
+
+
+System design concept covered 
+
+
+| Concept                   | Explanation                                                                 |
+|---------------------------|-----------------------------------------------------------------------------|
+| API Gateway               | Frontdoor for clients (mobile/web), routes requests to internal services.   |
+| Search Service            | Aggregates search results from multiple providers using Adapter Pattern.   |
+| Facade Pattern            | Handles coordination between adapters and business logic.                   |
+| User Service              | Handles user registration, authentication, profile, etc.                    |
+| Booking Service           | Handles booking flow, status, booking ID generation, retries, etc.          |
+| Payment Service           | Talks to 3rd-party gateways like Razorpay/Paytm, using Adapter Pattern.     |
+| Notification Service      | Sends confirmation emails/SMS/push after booking/payment (async via queue).|
+| Database Modeling         | Covers normalization, relationships between User, Booking, Payment.         |
+| Scalability               | Horizontally scalable services via microservices.                          |
+| Caching Layer             | To cache frequently searched results (e.g., Redis for flight/hotel search). |
+| Rate Limiting / Throttling| To prevent abuse by clients, especially on 3rd-party APIs.                 |
+| Resilience                | Retry mechanism, circuit breakers around 3rd-party API calls.              |
+| Asynchronous Processing   | Queue for post-booking tasks (e.g., Kafka + consumers). 

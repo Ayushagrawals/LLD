@@ -1,0 +1,5 @@
+Design a simplified booking system that allows users to search and 
+book transportation services such as Flights, Trains, and Roadways. 
+The system integrates with external vendors like Indigo, SpiceJet, and Razorpay 
+for booking, discounts, and payment.
+

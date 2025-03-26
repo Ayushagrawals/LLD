@@ -1,0 +1,85 @@
+TIC TAC TOE – LLD SUMMARY
+==========================
+
+Problem:
+--------
+Design a 2-player board game (Tic Tac Toe) with win/draw logic, turn management, and a 3x3 board.
+
+
+Core Classes:
+-------------
+| Class      | Responsibilities                                                  |
+|------------|-------------------------------------------------------------------|
+| Player     | Holds player info: ID, name, symbol (X/O)                         |
+| Cell       | Represents one cell: row, col, and current symbol                 |
+| Board      | 2D grid of Cells, manages board state and rendering               |
+| Game       | Coordinates game logic, players, board, turns, and game status    |
+| Move       | Represents a move: row, col, and player making the move           |
+| GameStatus | Enum: PLAYING, WIN, DRAW                                          |
+| GameWinningStrategy | Interface to check winning logic                         |
+| RowWinningStrategy  | Checks horizontal win                                    |
+| ColWinningStrategy  | Checks vertical win                                      |
+| DiagonalWinningStrategy | Checks diagonal win                                  |
+
+
+Design Patterns Used:
+---------------------
+| Pattern    | Usage Description                                                |
+|------------|------------------------------------------------------------------|
+| Strategy   | For different win condition logic (row/col/diagonal)             |
+| Factory    | (Optional) For creating game/players in a clean way              |
+| Enum       | To manage Game status and player symbols                         |
+
+
+Game Flow:
+----------
+1. Initialize Board and Players
+2. Players take turns
+3. On each move:
+   - Validate move
+   - Update board
+   - Check win/draw via strategy
+4. End game with result
+
+
+Class Diagram (Text Representation):
+------------------------------------
+Player
+ └── id
+ └── name
+ └── symbol (X/O)
+
+Cell
+ └── row
+ └── col
+ └── playerSymbol
+
+Board
+ └── size
+ └── grid: Cell[][]
+ └── printBoard()
+
+Game
+ └── board
+ └── players: List<Player>
+ └── status: GameStatus
+ └── winningStrategy: GameWinningStrategy
+ └── play()
+
+Move
+ └── player
+ └── row
+ └── col
+
+GameStatus (Enum): PLAYING, WIN, DRAW
+
+GameWinningStrategy (interface)
+ └── isWinningMove(Board, Move)
+
+
+Possible Extensions:
+--------------------
+- Dynamic board size (NxN)
+- Multiplayer support
+- Scoreboard / Match history
+- Web or GUI interface

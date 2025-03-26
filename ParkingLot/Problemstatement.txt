@@ -1,0 +1,49 @@
+Design a system to manage a parking lot. 
+The system should be able to handle multiple floors, different types of vehicles, 
+and keep track of free and occupied spots
+
+Functional Requirements:
+
+Parking Lot Structure:
+
+The parking lot has multiple floors.
+
+Each floor has multiple parking spots.
+
+Parking spots can be of types: Compact, Large, Handicapped, Bike, Electric.
+
+Vehicle Types:
+
+Vehicles can be: Car, Truck, Bike, Electric Car.
+
+Vehicle type should match the allowed spot type.
+
+Core Features:
+
+Ability to park a vehicle and assign a spot.
+
+Ability to unpark a vehicle and free the spot.
+
+System should generate a parking ticket when a vehicle is parked.
+
+System should track available spots.
+
+Prevent a vehicle from being parked in an incompatible spot (e.g., truck in compact).
+
+Other Requirements:
+
+Assume the parking is first-come, first-served.
+
+System should support querying availability of spots per floor/type.
+
+Include a display board that shows number of free spots per type/floor.
+
+Should work in a multi-threaded environment (optional advanced requirement).
+
+Non-Functional Requirements:
+Scalable for large parking lots.
+
+Clean class design using OOP principles.
+
+Use relevant design patterns where applicable (e.g., Strategy, Singleton).
+

@@ -1,0 +1,6 @@
+/booking-search-system
+│
+├── class-diagram.txt
+├── db-schema.txt
+├── class-skeletons.txt
+└── README.md

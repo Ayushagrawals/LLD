@@ -1,0 +1,48 @@
+Beginner Level (Easy)
+These build confidence and introduce core concepts like OOP, relationships, and basic patterns.
+
+Tic Tac Toe         
+
+Snake and Ladder
+
+Parking Lot
+
+Library Management System
+
+Vending Machine
+
+ATM System
+
+Elevator System
+
+🟡 Intermediate Level (Medium)
+These introduce design patterns, interface segregation, and business logic.
+
+Cab Booking System (like Uber/Ola)
+
+Hotel Booking System (like OYO/Agoda) – ✅ Already Done
+
+Transport Booking System (like RedBus) – ✅ Already Done
+
+Splitwise
+
+Rate Limiter
+
+Notification System (Email, SMS, Push)
+
+🔴 Advanced Level (Hard)
+These combine multiple patterns, large-scale architecture thinking, and external systems.
+
+Chat Application (like WhatsApp) – ✅ HLD Covered
+
+Order Management System (like Amazon)
+
+Payment Gateway (like Razorpay/Stripe)
+
+Netflix Movie Streaming System
+
+YouTube Video Streaming with Recommendation
+
+Instagram/Facebook Feed
+
+Google Docs (Collaborative Editor)

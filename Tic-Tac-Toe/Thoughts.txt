@@ -1,0 +1,41 @@
+For any board game we can consider it as a foundation anthing in which user interacting with
+each other for example chatting so we have chat id which will foreign key to the
+pariticpant.\
+here we have participant table and the game table game id will be a foreign key
+
+This concept can be added to the ludo, chess and any other board game of 0 X
+the games stragey and the classes like board and the cell is going to be changed.
+
+This can be a strgey pattern where game class and user and the participant is the 
+reusbale and board interface and cell interface will be implemented like 
+
+
+public interface Board {
+    void initializeBoard();
+    void printBoard();
+}
+
+
+public class TicTacToeBoard implements Board {
+    private String boardId;       // Unique identifier (optional, useful in DB)
+    private int size = 3;
+    private Cell[][] cells;
+
+    @Override
+    public void initializeBoard() {
+        cells = new Cell[size][size];
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
+                cells[i][j] = new Cell(i, j);
+    }
+
+    @Override
+    public void printBoard() {
+        // Show board contents
+    }
+}
+
+ludo implment boardinterce{
+
+}
+or chess implemenent board intervce

@@ -1,0 +1,50 @@
+Player class
+
+Player name
+Player ID
+Player email
+Player phoneno
+
+Board
+
+Game id(foreign key)
+Board id
+Board status(Game ended, Playing)
+Board 2d array occouped 0 for false x for 1
+
+Game
+Game id
+Game status(enum)
+
+Participant
+
+Particiapnt id1
+Participant id2
+Game id(unique for each game)
+
+enum
+Game status(L , W ,Draw)
+
+If user1 wins out of user2 will set game status as w for player 1 and lose for player 2 board will be updated boards stuastu game ended and 2d array will be code game table also
+is the foreign key in participalt so with the join we could see paricipant table and game id game related information can be fetched but it's not complete some misake is ther not loking clear am i able to think what is the issue here
+
+Tic Tac Toe 3x3 board, 2 players, symbol X/O
+Ludo 4 players, 4 pieces each, safe zones, dice logic
+Snake & Ladder 1D board (usually 100 cells), snakes, ladders, dice roll
+Chess Complex cell logic, multiple piece types, rules like checkmate
+Carrom Circular board, coins, striker logic (not grid based)
+
+Analogy with Chat App
+You nailed this:
+
+Game = Chat Room
+
+Participants = Chat Room Members
+
+Board = Chat History or Chat Screen
+
+Moves = Messages
+
+User = Chat User
+
+This analogy is useful for modeling multiple participants interacting over a shared entity (game/chat/thread/etc).

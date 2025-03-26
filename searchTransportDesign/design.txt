@@ -1,0 +1,111 @@
+// Interface for Strategy Pattern
+public interface Transport {
+    void search(Map<String, String> searchCriteria);
+}
+
+// Concrete Strategy: Flight
+public class FlightTransport implements Transport {
+    public void search(Map<String, String> searchCriteria) {
+        String provider = searchCriteria.get("provider");
+        String query = searchCriteria.get("query");
+        FlightFacade facade = new FlightFacade();
+        Map<String, String> results = facade.search(query, provider);
+        // Display or return results
+    }
+}
+
+// Concrete Strategy: Train
+public class TrainTransport implements Transport {
+    public void search(Map<String, String> searchCriteria) {
+        // Implementation for train search
+    }
+}
+
+// Concrete Strategy: Roadway
+public class RoadwayTransport implements Transport {
+    public void search(Map<String, String> searchCriteria) {
+        // Implementation for roadway search
+    }
+}
+
+// Facade for Flight search
+public class FlightFacade {
+    public Map<String, String> search(String query, String provider) {
+        FlightProviderAdapter adapter;
+        switch (provider.toLowerCase()) {
+            case "indigo":
+                adapter = new IndigoAdapter();
+                break;
+            case "spicejet":
+                adapter = new SpiceJetAdapter();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported provider");
+        }
+        return adapter.search(query);
+    }
+}
+
+// Adapter Interface
+public interface FlightProviderAdapter {
+    Map<String, String> search(String query);
+}
+
+// Adapter Implementation: Indigo
+public class IndigoAdapter implements FlightProviderAdapter {
+    public Map<String, String> search(String query) {
+        IndigoAPI api = new IndigoAPI();
+        return api.searchIndigo(query);
+    }
+}
+
+// Adapter Implementation: SpiceJet
+public class SpiceJetAdapter implements FlightProviderAdapter {
+    public Map<String, String> search(String query) {
+        SpiceJetAPI api = new SpiceJetAPI();
+        return api.searchSpiceJet(query);
+    }
+}
+
+// Third-Party API: Indigo
+public class IndigoAPI {
+    public Map<String, String> searchIndigo(String query) {
+        // Call actual Indigo API and return result
+        return new HashMap<>();
+    }
+}
+
+// Third-Party API: SpiceJet
+public class SpiceJetAPI {
+    public Map<String, String> searchSpiceJet(String query) {
+        // Call actual SpiceJet API and return result
+        return new HashMap<>();
+    }
+}
+
+// Main application class
+public class TravelApp {
+    public static void main(String[] args) {
+        String userChoice = "flight";
+        Map<String, String> searchCriteria = new HashMap<>();
+        searchCriteria.put("query", "BLR-DEL");
+        searchCriteria.put("provider", "indigo");
+
+        Transport transport;
+        switch (userChoice.toLowerCase()) {
+            case "flight":
+                transport = new FlightTransport();
+                break;
+            case "train":
+                transport = new TrainTransport();
+                break;
+            case "roadway":
+                transport = new RoadwayTransport();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid mode of transport");
+        }
+
+        transport.search(searchCriteria);
+    }
+}

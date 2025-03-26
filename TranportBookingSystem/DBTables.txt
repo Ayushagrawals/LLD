@@ -1,0 +1,28 @@
+CREATE TABLE Users (
+  user_id VARCHAR PRIMARY KEY,
+  name VARCHAR,
+  email VARCHAR
+);
+
+
+CREATE TABLE Bookings (
+  booking_id VARCHAR PRIMARY KEY,
+  user_id VARCHAR REFERENCES Users(user_id),
+  transport_type VARCHAR,
+  booking_date DATE,
+  booking_status VARCHAR,
+  payment_mode VARCHAR,
+  discount_provider VARCHAR
+);
+
+Payment Table
+
+payment_id (PK)
+user_id (FK → User)
+booking_id (FK → Booking)
+payment_type (ENUM)
+gateway (string)
+amount
+status (ENUM)
+payment_time (timestamp)
+

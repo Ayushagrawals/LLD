@@ -1,0 +1,17 @@
+Strategy Pattern	 - Used for selecting transport type (Flight, Train, Roadway) dynamically at runtime via the Transport interface.
+Adapter Pattern	-  Used to integrate external providers like Indigo, SpiceJet, or Razorpay with a common interface.
+Facade Pattern	-  FlightFacade is used to simplify and encapsulate interaction with different flight provider adapters.
+Singleton Pattern (optional)  -	For managing configuration or client API objects (handled by Spring if used).
+Prototype Pattern (optional)  -	If multiple preconfigured booking templates are needed (not shown but extendable).
+
+Selecting payment method (Card/UPI/etc.)	Strategy Pattern
+Integrating with Razorpay, Paytm, etc.	Adapter Pattern
+Centralizing payment handling	Optionally a Facade
+
+
+
+Selecting transport method	Strategy Pattern
+Searching with 3rd-party providers	Adapter + Facade
+Booking handling	Core Business Logic
+Payment Gateway Integration	Adapter Pattern
+Selecting Payment Type (UPI, CARD, etc.)	Strategy Pattern

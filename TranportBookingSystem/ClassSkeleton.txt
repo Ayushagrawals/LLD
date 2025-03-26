@@ -1,0 +1,113 @@
+// Transport.java [Strategy]
+public interface Transport {
+    void search(Map<String, String> criteria);
+}
+
+// FlightTransport.java
+public class FlightTransport implements Transport {
+    public void search(Map<String, String> criteria) {
+        FlightFacade facade = new FlightFacade();
+        facade.search(criteria);
+    }
+}
+
+// TrainTransport.java
+public class TrainTransport implements Transport {
+    public void search(Map<String, String> criteria) {
+        // Search logic
+    }
+}
+
+// RoadwayTransport.java
+public class RoadwayTransport implements Transport {
+    public void search(Map<String, String> criteria) {
+        // Search logic
+    }
+}
+
+// FlightFacade.java [Facade]
+public class FlightFacade {
+    public void search(Map<String, String> criteria) {
+        String provider = criteria.get("provider");
+        FlightAdapter adapter = null;
+
+        if ("indigo".equals(provider)) adapter = new IndigoAdapter();
+        else if ("spicejet".equals(provider)) adapter = new SpiceJetAdapter();
+
+        adapter.searchFlight(criteria);
+    }
+}
+
+// FlightAdapter.java [Adapter]
+public interface FlightAdapter {
+    List<String> searchFlight(Map<String, String> criteria);
+}
+
+// IndigoAdapter.java [Adapter]
+public class IndigoAdapter implements FlightAdapter {
+    public List<String> searchFlight(Map<String, String> criteria) {
+        IndigoAPI api = new IndigoAPI();
+        return api.findFlights(criteria);
+    }
+}
+
+// PaymentStrategy.java [Strategy]
+public interface PaymentStrategy {
+    boolean pay(double amount);
+}
+
+// UpiPayment.java
+public class UpiPayment implements PaymentStrategy {
+    public boolean pay(double amount) {
+        // Logic for UPI
+        return true;
+    }
+}
+
+// CardPayment.java
+public class CardPayment implements PaymentStrategy {
+    public boolean pay(double amount) {
+        // Logic for Card
+        return true;
+    }
+}
+
+// Booking.java
+public class Booking {
+    private String bookingId;
+    private String userId;
+    private String transportType;
+    private Date date;
+    private String paymentMode;
+
+    public void calculateFare() {
+        // calculate based on transport and discounts
+    }
+}
+
+// User.java
+public class User {
+    private String userId;
+    private String name;
+    private String email;
+}
+
+
+class Payment {
+    String paymentId;
+    PaymentType type; // CARD, UPI, NETBANKING, WALLET, etc.
+    PaymentGateway gateway; // Razorpay, Paytm, etc. (Can be Adapter)
+    double amount;
+    Booking booking;  // has-a relationship (One payment per booking)
+    User user;        // has-a relationship (Who paid)
+    PaymentStatus status; // SUCCESS, PENDING, FAILED
+    LocalDateTime paymentTime;
+}
+
+enum PaymentType {
+    CARD, UPI, NETBANKING, WALLET
+}
+
+enum PaymentStatus {
+    SUCCESS, FAILED, PENDING
+}

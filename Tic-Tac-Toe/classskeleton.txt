@@ -1,0 +1,63 @@
+class Player {
+    String id;
+    String name;
+    char symbol; // 'X' or 'O'
+
+    void makeMove(Game game, int row, int col) {
+        game.makeMove(this, row, col);
+    }
+}
+
+class Cell {
+    class Cell {
+    int row;
+    int col;
+    Symbol symbol; // could be X, O, or EMPTY
+
+    boolean isEmpty();
+}
+
+}
+
+class Board {
+    class Board {
+    int size;
+    Cell[][] grid;
+
+    // Methods
+    boolean isCellEmpty(int row, int col);
+    void setCell(int row, int col, Symbol symbol);
+    void printBoard(); // optional for console game
+}
+
+}
+
+enum GameStatus { IN_PROGRESS, WIN, DRAW, ENDED }
+
+class Game {
+    class Game {
+    String gameId;
+    Board board;
+    List<Participant> participants;
+    GameStatus status;
+    Participant currentTurn;
+
+    // Methods
+    boolean playMove(Participant p, int row, int col);
+    boolean isPlayerTurn(Participant p);
+    boolean checkWinCondition(Participant p);
+    boolean checkDraw();
+    void switchTurn();
+}
+
+}
+
+
+Class names and structure	✅ Yes
+Relationships (composition, inheritance)	✅ Yes
+Attributes and methods	✅ Yes
+Core flow (game moves, etc.)	✅ Yes
+Win/Lose logic or major rules	✅ Yes (only logic, not full code)
+Design patterns	✅ Optional but preferred
+Scalability / Performance	❌ Not necessary (belongs to HLD)
+Coding actual functions	❌ Not required, unless they ask

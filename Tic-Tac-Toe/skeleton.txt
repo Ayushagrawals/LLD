@@ -1,0 +1,84 @@
+class Game{
+    String Gameid;
+    String Gamename;
+    String status;
+}
+
+class Participant
+{
+    String participantId;
+    String GameId;
+    String userId;
+    String symbol;
+}
+
+class Board
+{
+    String boardId;
+    Cell[][] =new int[row][col];
+    createBoard();
+    whichTurn();
+    isAlreadyPlayed();
+    moveForward();
+}
+class Cell{
+    int row;
+    int col;
+    Character symbol;
+}
+
+class User{
+    String UserId;
+    String userName;
+    String userEmail;
+    String userPhoneno;
+}
+
+class Game{
+    String Gameid;
+    String Gamename;
+    GameStatus gamestatus;
+}
+
+class Participant
+{
+    String participantId;
+    String GameId;
+    String userId;
+    String symbol;
+}
+
+class Board
+{
+    String boardId;
+    Cell[][] =new int[row][col];
+    createBoard();
+    whichTurn();
+    isAlreadyPlayed();
+    moveForward();
+}
+class Cell{
+    int row;
+    int col;
+    Character symbol;
+}
+
+enum GameStatus {
+    PLAYING,
+    ENDED,
+    DRAW
+}
+
+class Game {
+    String gameId;
+    String gameName;
+    GameStatus status;
+}
+
+
+class User{
+    String UserId;
+    String userName;
+    String userEmail;
+    String userPhoneno;
+}
