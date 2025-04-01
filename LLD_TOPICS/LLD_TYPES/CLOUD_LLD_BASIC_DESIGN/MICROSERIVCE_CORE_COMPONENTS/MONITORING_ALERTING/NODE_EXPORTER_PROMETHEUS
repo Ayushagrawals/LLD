@@ -1,0 +1,53 @@
+Q - so just like service provide pod level metrices does node exporter provide node based metrics?
+Yes, exactly! Just like how **microservices** provide **pod-level metrics** (e.g., using `/actuator/prometheus` for Spring Boot apps), **Node Exporter** provides **node-level metrics**. These metrics are related to the **host machine** (the node) on which the containerized applications or microservices are running.
+
+### **Node Exporter Metrics**
+
+The **Node Exporter** collects **host-level** statistics, such as:
+
+- **CPU usage**: Overall CPU utilization, idle time, etc.
+- **Memory usage**: Free memory, used memory, swap usage.
+- **Disk usage**: Free disk space, disk I/O operations.
+- **Network stats**: Network interface statistics (e.g., packets sent/received).
+- **File system stats**: File system usage, inode usage.
+
+### **How Node Exporter Works**
+
+- **Node Exporter** runs as a **daemon** on each node (or VM, EC2 instance, etc.).
+- It exposes a **/metrics** endpoint, typically on port `9100`.
+- **Prometheus** scrapes this `/metrics` endpoint to collect these node-level metrics.
+
+For example, **Prometheus** scrapes metrics like this:
+
+```
+http://<node-ip>:9100/metrics
+```
+
+### **Example of Metrics Collected by Node Exporter**
+
+```plaintext
+# HELP node_memory_MemFree_bytes Free memory in bytes
+# TYPE node_memory_MemFree_bytes gauge
+node_memory_MemFree_bytes 1.23456789e+07
+
+# HELP node_cpu_seconds_total Total seconds the CPU has spent in different modes
+# TYPE node_cpu_seconds_total counter
+node_cpu_seconds_total{cpu="0",mode="idle"} 1.23456789e+06
+```
+
+### **How Node Exporter Helps with Monitoring**
+
+- **CPU**: Helps monitor the node’s CPU utilization, which can indicate whether your nodes are under heavy load.
+- **Memory**: Tracks memory consumption, helping you understand whether your node is running out of memory.
+- **Disk**: Provides disk space and I/O statistics, allowing you to monitor the available storage and identify bottlenecks.
+- **Network**: Helps monitor the network activity, useful for detecting issues like network congestion.
+
+By collecting this data, **Prometheus** helps you visualize infrastructure health and performance, especially when integrated with **Grafana**.
+
+---
+
+So, in summary:
+
+- **Node Exporter** collects **host/node-level metrics** (like CPU, memory, disk, and network).
+- **Prometheus** scrapes these metrics and stores them.
+- These metrics are visualized via **Grafana** for monitoring node health.
