@@ -106,9 +106,6 @@ Weighted Load Balancing: If you have some instances with higher resources or bet
 Step 3: Service A Sends the Request
 Once Ribbon selects the healthy instance (for example, 192.168.1.1:8080), Service A sends the request to that instance of Service B.
 
-java
-Copy
-Edit
 RestTemplate restTemplate = new RestTemplate();
 String url = "http://service-b/endpoint";
 ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
