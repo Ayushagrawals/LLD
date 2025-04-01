@@ -1,0 +1,77 @@
+Yes, you're right! Prometheus is a **time-series database**, and once it collects all the metrics from the applications and systems it's monitoring, it stores the data in its own internal storage. Here's how the overall monitoring and alerting flow works:
+
+### 1. **Prometheus Scrapes and Stores Metrics**:
+   - **Prometheus** scrapes data (metrics) from various endpoints (like `/actuator/prometheus` for Spring Boot apps) at regular intervals.
+   - These metrics are stored in Prometheus' **time-series database** (TSDB), which allows Prometheus to store and query the data over time (e.g., CPU usage, request counts, response times, etc.).
+
+### 2. **Prometheus Querying**:
+   - Once the data is stored, **Prometheus queries** that data via **PromQL** (Prometheus Query Language). It uses this to gather insights, such as average response time, error rates, etc.
+   - **Prometheus** doesn't have a built-in UI for alerts or monitoring; it focuses on the querying, storing, and scraping of metrics.
+
+### 3. **Alerting with Prometheus**:
+   - **Alerting Rules**: Prometheus can be configured with **alerting rules** that define conditions (based on metrics) that trigger alerts. These rules are defined in Prometheus' configuration files (e.g., `prometheus.yml`).
+   - Example of an alert rule:
+     ```yaml
+     alert: HighCpuUsage
+     expr: process_cpu_seconds_total{job="myapp"} > 0.85
+     for: 5m
+     annotations:
+       summary: "CPU usage is above 85% for more than 5 minutes"
+     ```
+
+### 4. **Alertmanager**:
+   - When Prometheus detects that a **threshold** in the alerting rule is crossed (e.g., CPU usage > 85% for more than 5 minutes), it **fires an alert**.
+   - Prometheus sends these alerts to **Alertmanager**, which is responsible for managing and handling these alerts.
+   
+   - **Alertmanager** performs the following tasks:
+     - **Deduplication**: It filters out duplicate alerts that might come from multiple Prometheus instances or sources.
+     - **Grouping**: It groups alerts that are related to the same issue.
+     - **Routing**: It determines where to send the alerts (e.g., email, Slack, Opsgenie, PagerDuty, etc.).
+     - **Silencing**: It allows for silencing alerts during planned maintenance or known issues.
+
+### 5. **Visualizing with Grafana**:
+   - **Grafana** is typically used for **visualizing** the metrics stored in Prometheus. It connects to Prometheus as a data source and creates dashboards to help users visualize the metrics and trends (e.g., CPU usage over time, request rate, response time, etc.).
+   - **Grafana Alerts**: In addition to the alerting rules in Prometheus, Grafana can also create **alerts** based on the visualized metrics. If the threshold for a metric in a Grafana dashboard is breached, it can send an alert to the user via email, Slack, or other channels.
+
+### **Summary of the Process**:
+1. **Prometheus** scrapes metrics and stores them in a time-series database.
+2. **Prometheus** uses alerting rules to detect conditions that trigger alerts.
+3. **Alertmanager** receives alerts from Prometheus, handles them (e.g., deduplication, grouping), and sends notifications to the relevant channels (Slack, email, etc.).
+4. **Grafana** visualizes the metrics, allowing you to monitor the system and can also generate alerts for specific thresholds.
+
+### Example of Prometheus + Alertmanager Flow:
+
+1. **Prometheus Scraping Metrics**:
+   - Prometheus scrapes metrics from your application every 15 seconds.
+   - For example, it scrapes `/actuator/prometheus` from your Spring Boot application.
+
+2. **Storing Metrics**:
+   - Prometheus stores the scraped data in its time-series database, organized by the time they were scraped.
+   - For instance, a metric like `http_requests_total` might store the number of HTTP requests over time.
+
+3. **Alert Rule Example**:
+   - Prometheus has an alert rule to monitor HTTP request errors:
+     ```yaml
+     alert: HighErrorRate
+     expr: rate(http_requests_total{status="500"}[5m]) > 0.1
+     for: 5m
+     annotations:
+       summary: "High error rate detected in the last 5 minutes"
+     ```
+
+4. **Alertmanager**:
+   - When the alert condition (`rate of 500 HTTP errors > 0.1 per second for 5 minutes`) is met, Prometheus triggers the **HighErrorRate** alert.
+   - **Alertmanager** receives the alert, groups it (if necessary), and sends a notification to **Slack** or **email** to notify the team about the high error rate.
+
+5. **Visualization in Grafana**:
+   - Grafana visualizes the HTTP request error rates and other metrics. You can create a dashboard showing this information.
+   - If the error rate increases, Grafana can also generate alerts.
+
+### Who Fetches the Data?
+
+- **Prometheus** fetches the data by scraping the application’s exposed endpoints (e.g., `/actuator/prometheus`).
+- **Alertmanager** fetches alerts from Prometheus and routes them according to configuration (e.g., to Slack, Email).
+- **Grafana** fetches the metrics stored in Prometheus to visualize them in dashboards.
+
+### In Summary:
+Prometheus collects and stores the time-series data, **Alertmanager** manages alerts, and **Grafana** visualizes and provides insights on the metrics. When an alert is triggered, Prometheus fetches the necessary data from its own time-series database, and Alertmanager handles the notifications.

@@ -1,0 +1,27 @@
+Q - okay so category if we make and divide these application level log are managed by fluentd foe ollecteting it and elastic serach for filtering it and kibana for visualize the data like grafaana but its for the metrics and the prometheus get sfrom teh actuator but related to metrice like infra level cpu usage thread usage etc and stores then some alrt mangaer telakes it and show it grafana so these are two catoegry zipkin is different category for seeing the reqeust flow
+
+Ans -
+ChatGPT said:
+Yes, you've got it right! Here's a breakdown of the categories:
+
+Application-Level Monitoring:
+
+Fluentd: Collects application logs.
+
+Elasticsearch: Stores and filters logs.
+
+Kibana: Visualizes logs and provides an interface for querying and analyzing them.
+
+Infrastructure-Level Monitoring:
+
+Prometheus: Collects infrastructure metrics (e.g., CPU usage, memory, thread usage).
+
+Alertmanager: Handles alerts based on the data collected by Prometheus.
+
+Grafana: Visualizes metrics from Prometheus and alerts.
+
+Distributed Tracing:
+
+Zipkin: Traces requests as they flow through microservices, helping track latency and request journeys.
+
+By categorizing this way, it’s easier to distinguish the different monitoring and observability layers for both application logs and system metrics.
