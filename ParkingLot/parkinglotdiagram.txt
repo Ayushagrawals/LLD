@@ -1,0 +1,84 @@
++------------------+                          
+|     Building     |
++------------------+
+| - floors: List<Floor>   |
++------------------+
+| + addFloor(Floor) |
+| + getFloors()     |
++------------------+
+
++------------------+
+|      Floor       |
++------------------+
+| - floorNo: int   |
+| - spots: List<ParkingSpot> |
++------------------+
+| + addSpot()      |
+| + getAvailableSpots() |
++------------------+
+
++------------------------+
+|     ParkingSpot        |
++------------------------+
+| - id: String           |
+| - type: ParkingSpotType|
+| - isOccupied: boolean  |
++------------------------+
+| + isOccupied()         |
+| + assignVehicle()      |
+| + removeVehicle()      |
++------------------------+  
+
+ Building
+List<Floor> floors
+
++addFloor(Floor)
+
++getFloors()
+
+🧱 Floor
+int floorNo
+
+List<ParkingSpot> spots
+
++addSpot(ParkingSpot)
+
++getAvailableSpots(VehicleType)
+
+🧱 ParkingSpot
+String id
+
+ParkingSpotType type
+
+boolean isOccupied
+
+Vehicle vehicle
+
++assignVehicle(Vehicle)
+
++removeVehicle()
+
++isOccupied()
+
+🚗 Vehicle (Interface or Abstract Class)
+VehicleType type
+
++getType()
+
+🛻 Subclasses:
+Car, Bike, Truck, etc. implement or extend Vehicle
+
+📦 Enums
+ParkingSpotType { COMPACT, LARGE, ELECTRIC, BIKE }
+
+VehicleType { CAR, BIKE, TRUCK, ELECTRIC }           
+
+Relationship Mapping
+Building → Floor: 1-to-many
+
+Floor → ParkingSpot: 1-to-many
+
+ParkingSpot → Vehicle: 1-to-1 (if occupied)
+
+Vehicle is used for booking
+

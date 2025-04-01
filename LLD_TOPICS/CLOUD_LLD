@@ -1,0 +1,24 @@
+ Cloud-Based LLD Practice List (Easy → Hard)
+🟢 Beginner (Fundamental AWS Services & Concepts)
+1️⃣ Load Balancer vs API Gateway → When to use ALB, NLB, API Gateway
+2️⃣ Scaling an EKS-Based Microservice → Auto-scaling, service discovery, networking
+3️⃣ AWS Caching Strategies → ElastiCache (Redis/Memcached) vs CDN vs Database Caching
+
+🟡 Intermediate (Architectural Decisions & Scaling)
+4️⃣ Deploying & Scaling a Microservices-Based E-Commerce Platform on AWS
+5️⃣ Distributed Logging & Monitoring (CloudWatch, ELK, Prometheus, Jaeger)
+6️⃣ Event-Driven Architecture using AWS SQS, SNS, and Kinesis
+
+🔴 Advanced (Complex, Real-World Scenarios)
+7️⃣ API Rate Limiting & Throttling (AWS API Gateway, CloudFront, WAF, Token Bucket)
+8️⃣ Resilient & Fault-Tolerant Systems (Multi-Region Failover, Disaster Recovery, Self-Healing)
+9️⃣ Designing a Distributed Storage System (AWS S3, Dropbox-like Architecture, Data Consistency)
+
+📌 How We’ll Proceed
+We pick one topic at a time (starting easy).
+
+I’ll guide you through architecture, components, AWS choices, and trade-offs.
+
+We’ll scale complexity as you gain confidence!
+
+Which one do you want to start with? 🚀
