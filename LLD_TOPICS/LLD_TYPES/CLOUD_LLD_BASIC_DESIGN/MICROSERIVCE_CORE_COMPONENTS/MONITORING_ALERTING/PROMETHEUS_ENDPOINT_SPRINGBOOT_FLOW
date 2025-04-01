@@ -1,0 +1,163 @@
+Q - but prometheus is deployed as apart of application in spring boot project how does it
+connect to the kube state metrices how promethes look like in cofnig file
+
+Ans -
+
+When **Prometheus** is deployed as part of a **Spring Boot application**, the setup would typically involve **Prometheus** scraping metrics exposed by the Spring Boot application itself (via `/actuator/prometheus`) and, in a Kubernetes environment, also scraping **kube-state-metrics** for Kubernetes resource-level metrics. Here's how you can achieve this integration:
+
+### **1. Prometheus in Spring Boot Application**
+
+In a Spring Boot application, Prometheus can be integrated using the **Micrometer** library, which provides a Prometheus-compatible endpoint. This allows Prometheus to scrape application-level metrics.
+
+#### Steps:
+
+- **Add Micrometer Prometheus dependency** to the `pom.xml` of your Spring Boot application:
+
+```xml
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+```
+
+- **Enable Prometheus metrics in the Spring Boot application**:
+  Spring Boot exposes a `/actuator/prometheus` endpoint where metrics can be accessed. Ensure that the **Spring Boot Actuator** dependency is added to your `pom.xml` as well:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+- **Expose Prometheus metrics via the `/actuator/prometheus` endpoint** in `application.properties` or `application.yml`:
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  endpoint:
+    prometheus:
+      enabled: true
+```
+
+- Now, Prometheus can scrape the application metrics by hitting the `/actuator/prometheus` endpoint.
+
+---
+
+### **2. Prometheus Scraping Kubernetes Metrics (kube-state-metrics)**
+
+In addition to scraping the application metrics from Spring Boot, Prometheus also needs to collect **Kubernetes resource-level metrics** (e.g., pod status, node metrics, deployment info, etc.) from **kube-state-metrics**.
+
+To make this work, you'll need to configure Prometheus to scrape the **kube-state-metrics** endpoint, which exposes Kubernetes resource-level metrics.
+
+#### Steps:
+
+- **Deploy kube-state-metrics** in the Kubernetes cluster:
+
+  kube-state-metrics is often deployed as a **Pod** in the `kube-system` namespace. You can install **kube-state-metrics** using Helm or manually through YAML manifests.
+
+  Helm command to install kube-state-metrics:
+
+  ```bash
+  helm install kube-state-metrics prometheus-community/kube-state-metrics
+  ```
+
+  Alternatively, you can use the following YAML manifest to deploy it manually.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-state-metrics
+  template:
+    metadata:
+      labels:
+        app: kube-state-metrics
+    spec:
+      containers:
+        - name: kube-state-metrics
+          image: quay.io/coreos/kube-state-metrics:v2.0.0
+          ports:
+            - containerPort: 8080
+              name: http
+```
+
+- **Configure Prometheus to scrape kube-state-metrics**:
+  Now, you need to configure Prometheus to scrape the metrics exposed by **kube-state-metrics**. This is done through **Prometheus scrape configurations** in the Prometheus configuration file (`prometheus.yml`).
+
+#### Example of Prometheus `prometheus.yml` configuration to scrape **Spring Boot** and **kube-state-metrics**:
+
+```yaml
+scrape_configs:
+  - job_name: "spring-boot-app"
+    metrics_path: "/actuator/prometheus" # Spring Boot actuator endpoint
+    static_configs:
+      - targets: ["spring-boot-app-service:8080"] # Replace with your Spring Boot service name and port
+
+  - job_name: "kubernetes"
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - kube-system
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        target_label: app
+    metrics_path: "/metrics"
+    honor_labels: true
+    scheme: http
+
+  - job_name: "kube-state-metrics"
+    static_configs:
+      - targets: ["kube-state-metrics.kube-system.svc.cluster.local:8080"] # Change to your kube-state-metrics service endpoint
+    metrics_path: "/metrics"
+```
+
+#### Breakdown of the `prometheus.yml` configuration:
+
+- **`spring-boot-app`**: This section tells Prometheus to scrape metrics from the Spring Boot application. It uses the **`/actuator/prometheus`** endpoint exposed by the Spring Boot app.
+- **`kubernetes`**: Prometheus can also scrape general Kubernetes metrics, such as pod status, deployments, etc., from the Kubernetes API server.
+- **`kube-state-metrics`**: Prometheus is set to scrape metrics exposed by **kube-state-metrics**, which provides Kubernetes resource-level metrics (e.g., pod status, number of replicas, node health, etc.).
+
+---
+
+### **3. Real-World Example: Monitoring with Prometheus in Spring Boot Application**
+
+Here’s a simple, real-world use case scenario for using **Prometheus** with a **Spring Boot application** and **kube-state-metrics**:
+
+1. **Spring Boot Application**:
+   - Your Spring Boot application is deployed within a Kubernetes cluster.
+   - The application exposes **application-level metrics** (e.g., request counts, response times, active threads) via the `/actuator/prometheus` endpoint.
+2. **kube-state-metrics**:
+
+   - Kubernetes itself is monitored through **kube-state-metrics**, which exposes metrics about Kubernetes resources (e.g., how many pods are running, whether deployments are up-to-date, etc.).
+   - This is essential for understanding the health and performance of the Kubernetes resources, and can be used to trigger actions like Horizontal Pod Autoscaling (HPA).
+
+3. **Prometheus Scraping Metrics**:
+
+   - Prometheus scrapes metrics from both the **Spring Boot application** (via `/actuator/prometheus`) and **kube-state-metrics** (via `/metrics`).
+   - Prometheus aggregates and stores this data in its time-series database, where it can be analyzed and visualized.
+
+4. **Alerting and Scaling**:
+   - Based on the metrics, Prometheus can trigger alerts (e.g., if CPU usage exceeds 80% for a certain period) and can integrate with **Alertmanager**.
+   - For autoscaling purposes, Kubernetes HPA can use Prometheus metrics to scale the number of pods in the application, depending on CPU or memory usage.
+
+---
+
+### **Conclusion**:
+
+- **Prometheus** is deployed as a part of your **Spring Boot application** via the **Micrometer** library and exposed via `/actuator/prometheus`.
+- **kube-state-metrics** is deployed within your Kubernetes cluster to expose metrics related to the state of Kubernetes resources.
+- Prometheus is configured to scrape metrics from both your Spring Boot application and **kube-state-metrics** to get a comprehensive view of both application-level and infrastructure-level performance.
+- Prometheus helps in monitoring, autoscaling (via HPA), and alerting in production environments, ensuring the system runs smoothly and can handle dynamic loads effectively.
+
+If you want to dive deeper into configuring Prometheus with your Spring Boot application or fine-tune Kubernetes metrics scraping, let me know!

@@ -1,0 +1,99 @@
+Q -prometheus i get it now and other present here which are part of alertin mornitorining?
+
+Ans - Great, now that you have a clear understanding of **Prometheus**, let's dive into the **alerting and monitoring** components. In a microservices-based architecture, monitoring and alerting are essential to ensure system reliability and availability. Here’s a breakdown of some of the key tools used in **monitoring and alerting** in a cloud-native system:
+
+### Key Monitoring and Alerting Tools in Cloud-based Systems:
+
+1. **Prometheus (Monitoring)**:
+
+   - **Role**: Prometheus is primarily a time-series database that collects and stores metrics data. It scrapes metrics from services exposed via endpoints like `/actuator/prometheus` and then stores them for querying and analysis.
+   - **Integration**: Prometheus integrates with other tools (like **Grafana** for visualization) to display the data and provide insights into the performance and health of services.
+
+2. **Grafana (Visualization)**:
+
+   - **Role**: Grafana is typically used alongside Prometheus to visualize the metrics data. Grafana can create dashboards that help you visualize performance metrics, health statistics, and alerts.
+   - **Integration**: Grafana connects to Prometheus as a data source and allows you to create detailed dashboards that show how your services are performing.
+
+3. **Alertmanager (Alerting)**:
+
+   - **Role**: Alertmanager works with Prometheus to handle alerts. Prometheus generates alerts based on defined rules (e.g., service down, high latency, etc.). Alertmanager receives these alerts and can send them to various notification channels (e.g., Slack, email, PagerDuty).
+   - **Integration**: The alerting rules are configured in Prometheus, and when a metric crosses a defined threshold, an alert is triggered and sent to Alertmanager. Alertmanager is responsible for deduplicating, grouping, and routing these alerts.
+
+4. **Kubernetes Metrics Server (Metrics Collection)**:
+
+   - **Role**: The **Metrics Server** collects resource usage data from Kubernetes nodes and pods, such as CPU, memory, and other metrics. These metrics can be used by the **Horizontal Pod Autoscaler (HPA)** for scaling decisions.
+   - **Integration**: Metrics Server is responsible for providing real-time usage data to Kubernetes, which can be used to trigger actions like autoscaling.
+
+5. **Kube-State-Metrics**:
+
+   - **Role**: **Kube-State-Metrics** is a service that exposes the state of various Kubernetes resources (e.g., pods, deployments, nodes) as metrics. These metrics include pod status, deployment status, and resource usage, which Prometheus can scrape.
+   - **Integration**: Kube-State-Metrics is often deployed alongside Prometheus to collect Kubernetes-specific metrics, which can help you track the health of your cluster and services.
+
+6. **Elasticsearch, Logstash, and Kibana (ELK Stack)**:
+
+   - **Role**: ELK Stack is widely used for **log aggregation** and analysis. Logs from various services and containers are pushed to Elasticsearch, which allows you to store and query logs efficiently.
+   - **Integration**: **Logstash** processes logs from services and pushes them to **Elasticsearch** for storage and indexing. **Kibana** then allows you to visualize and query the logs, which can be crucial for debugging and monitoring service behavior.
+
+7. **Jaeger (Distributed Tracing)**:
+   - **Role**: Jaeger is used for **distributed tracing**. It helps track the flow of requests across microservices, showing where bottlenecks, latency, and failures occur. This is particularly useful for identifying performance issues in microservices architectures.
+   - **Integration**: Jaeger integrates with your microservices via tracing libraries and collects traces for requests that flow through your system. It gives you insights into how a request is processed across services, helping you understand latency and optimize performance.
+
+---
+
+### How Do They All Work Together in a Cloud-Based Monitoring System?
+
+1. **Metrics Collection (Prometheus + Kube-State-Metrics)**:
+
+   - Prometheus scrapes metrics from **services** via endpoints (like `/actuator/prometheus` in Spring Boot) and Kubernetes resources through **Kube-State-Metrics**.
+   - These metrics represent various aspects of the system, such as CPU usage, memory usage, request latency, error rates, etc.
+
+2. **Visualization (Grafana)**:
+
+   - Prometheus sends the collected metrics to **Grafana**, which provides interactive dashboards for visualizing metrics over time (e.g., CPU usage, request latency).
+   - Grafana dashboards help you get a clear, visual understanding of the system's health and performance.
+
+3. **Alerting (Prometheus + Alertmanager)**:
+
+   - Prometheus is configured with alerting rules to watch for abnormal behavior (e.g., service failures, high error rates, high latency).
+   - When an alert condition is met (e.g., a service goes down or response time exceeds the threshold), Prometheus triggers an alert.
+   - **Alertmanager** processes these alerts and forwards them to your configured alerting channels (e.g., Slack, email, PagerDuty).
+
+4. **Logs (ELK Stack)**:
+   - Logs from microservices (e.g., HTTP request logs, application errors, etc.) are collected using **Logstash** and pushed to **Elasticsearch** for indexing.
+   - **Kibana** is then used to visualize logs, helping you track down issues and monitor events at the application level.
+5. **Tracing (Jaeger)**:
+   - **Jaeger** is used to trace the flow of requests through your microservices.
+   - This is particularly useful for diagnosing performance issues, as you can trace where latency is introduced (e.g., which service or database call is taking too long).
+
+---
+
+### Use Case Example (End-to-End):
+
+Let's say you have a microservices-based e-commerce platform deployed on AWS with multiple microservices like **order service**, **payment service**, **inventory service**, etc.
+
+1. **Prometheus** scrapes metrics from each microservice via their `/actuator/prometheus` endpoints, as well as from Kubernetes using **Kube-State-Metrics** to gather resource usage and health data.
+2. **Grafana** visualizes the metrics in dashboards, showing you metrics like:
+
+   - Response times
+   - Error rates
+   - CPU and memory usage per pod
+
+3. If the **order service**'s response time exceeds a certain threshold (e.g., more than 500ms), **Prometheus** triggers an alert, and **Alertmanager** sends a notification to the **Slack channel**.
+
+4. **Jaeger** traces the request from the **API Gateway** to the **order service** and the **payment service**. It helps identify that the issue is caused by a slow database query in the **payment service**.
+
+5. **Logs** from the **payment service** are sent to **Elasticsearch** via **Logstash**, and **Kibana** is used to inspect the logs and identify the root cause of the database query delay.
+
+---
+
+### Key Concepts to Remember for Monitoring and Alerting LLD:
+
+1. **Metrics Collection**: How you collect metrics using tools like **Prometheus** and **Kube-State-Metrics**.
+2. **Visualization**: Using **Grafana** to visualize metrics and identify system behavior and health.
+3. **Alerting**: Setting up alerting rules in **Prometheus** and handling alerts using **Alertmanager**.
+4. **Log Aggregation**: Using **ELK Stack** (Elasticsearch, Logstash, Kibana) to aggregate and query logs.
+5. **Distributed Tracing**: Using **Jaeger** to trace requests across microservices and analyze system performance.
+
+---
+
+This should give you a complete view of **monitoring and alerting** in cloud-native applications! Let me know if you want to dive deeper into any of these tools or topics!
