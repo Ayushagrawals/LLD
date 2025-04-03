@@ -1,0 +1,39 @@
+Yes, in LLD interviews, you will likely encounter questions about **scalability, data distribution, and query performance**. Here’s how you should approach them:
+
+### **1️⃣ Key Questions in LLD Interviews on Partitioning & Sharding**
+
+1. **How would you scale a database for millions of users?**  
+   → Answer should include **partitioning vs. sharding**, vertical vs. horizontal scaling, and when to choose each.
+2. **What type of sharding strategy would you use?**  
+   → Range-Based, Hash-Based, Geo-Based, etc., with reasoning based on the **use case**.
+
+3. **What database type would you choose (SQL vs NoSQL)?**  
+   → SQL (e.g., PostgreSQL/MySQL) for **structured transactional data**.  
+   → NoSQL (e.g., MongoDB, Cassandra) for **high-scale distributed reads/writes**.
+
+4. **How would you handle joins in a sharded database?**  
+   → Explain the **challenges of joins across shards** and potential solutions (denormalization, lookup tables, application-side joins).
+
+5. **How will you manage consistency in a distributed database?**  
+   → Discuss CAP theorem, Eventual vs. Strong Consistency, Replication Strategies.
+
+6. **How will you ensure high availability & failover?**  
+   → Talk about replication, master-slave or multi-primary architecture, and auto-failover mechanisms.
+
+7. **How would you rebalance shards if one becomes overloaded?**  
+   → Explain **consistent hashing**, shard splitting, and auto-scaling techniques.
+
+8. **How will indexing help in large-scale queries?**  
+   → B-Trees, Hash Indexes, and how they differ in SQL/NoSQL.
+
+### **2️⃣ Answering with Database Design Principles**
+
+- If asked **which algorithm** you’ll use → **Consistent Hashing**, Range Sharding, Geo-Sharding, etc.
+- If asked **how to scale reads/writes** → **Read Replicas, CQRS (Command Query Responsibility Segregation)**.
+- If asked **how to optimize joins across shards** → **Pre-aggregation, materialized views, caching layer (Redis, Memcached)**.
+
+### **3️⃣ Example Answer for an E-Commerce System**
+
+👉 _“For millions of users placing orders, I would shard the database based on **User ID** using Hash Sharding to distribute the load evenly. Since joins across shards are costly, I would denormalize some tables and use a caching layer (Redis) to improve performance. For high availability, each shard would have a **primary-replica setup with automatic failover**, and we would monitor query performance using Prometheus + Grafana.”_
+
+Would you like to see a **full LLD design document** for sharding a high-scale system? 🚀

@@ -1,0 +1,78 @@
+### **Database Sharding & High Availability – Interview Questions**  
+
+When discussing **sharding & high availability** in a **distributed database system**, expect questions around:  
+
+---
+
+## **1. Fundamental Questions**  
+✅ **What is database sharding?**  
+✅ **How does sharding improve scalability?**  
+✅ **What are the key challenges of database sharding?**  
+✅ **How is sharding different from partitioning?**  
+✅ **What are the different types of sharding strategies?**  
+  - **Range-Based Sharding**  
+  - **Hash-Based Sharding**  
+  - **Geo-Sharding**  
+  - **Directory-Based Sharding**  
+
+---
+
+## **2. Sharding for Banking & High Availability Use Cases**  
+✅ **Would you recommend sharding for a banking/transactional system? Why or why not?**  
+✅ **How do you handle high availability in a sharded system?**  
+✅ **What happens if a shard fails? How do you recover from it?**  
+✅ **How do you handle transactions across multiple shards?**  
+✅ **Explain how Two-Phase Commit (2PC) works for sharded databases.**  
+✅ **How does the SAGA pattern work in distributed transactions? Is it suitable for banking?**  
+
+---
+
+## **3. Query Routing & Performance Optimization**  
+✅ **How does a query router determine which shard to query?**  
+✅ **What is a shard key? How do you select a good shard key?**  
+✅ **What happens if the shard key is not evenly distributed?**  
+✅ **How do you prevent shard hotspots (overloaded shards)?**  
+✅ **Can you perform `JOIN` operations efficiently in a sharded database?**  
+✅ **How would you handle aggregation queries across multiple shards?**  
+
+---
+
+## **4. Replication & Failover in a Sharded Database**  
+✅ **What replication strategies do you use in a sharded database?**  
+✅ **How do you design a failover strategy for a sharded database?**  
+✅ **How do you ensure consistency when a primary node fails?**  
+✅ **Explain how master-slave replication works in sharded databases.**  
+✅ **What is eventual consistency, and when would you use it?**  
+
+---
+
+## **5. Data Integrity & Backup Strategies**  
+✅ **How do you prevent data inconsistencies across shards?**  
+✅ **How do you perform backups in a distributed database system?**  
+✅ **What is a point-in-time recovery strategy?**  
+✅ **How would you migrate data between shards without downtime?**  
+
+---
+
+## **6. Modern Alternatives to Sharding**  
+✅ **When should you use a NewSQL database instead of sharding?**  
+✅ **How do databases like Google Spanner or CockroachDB solve scalability differently?**  
+✅ **How does AWS Aurora Global Database compare to traditional sharding?**  
+
+---
+
+### **Scenario-Based LLD Questions**  
+
+### **Scenario 1: You are designing a large-scale e-commerce database**  
+📝 *How would you shard the database to handle millions of users and transactions?*  
+
+### **Scenario 2: Handling Cross-Shard Transactions**  
+📝 *If a customer transfers money between two accounts on different shards, how do you ensure the transaction is atomic and consistent?*  
+
+### **Scenario 3: Handling Shard Failures**  
+📝 *A shard goes down, and customers with accounts on that shard can't transact. How do you design the system to handle such failures automatically?*  
+
+---
+
+**💡 Key Takeaway:**  
+👉 If you can answer these questions confidently, you'll be well-prepared for **sharding, high availability, and distributed transactions** in a system design interview. 🚀

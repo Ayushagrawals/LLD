@@ -1,0 +1,73 @@
+### **Sharding in an E-Commerce Application**  
+
+✅ **Sharding is used where high scalability & high availability are needed.**  
+❌ **Sharding is avoided where strong consistency & ACID transactions are required.**  
+
+---
+
+## **🔹 Where Will Sharding Be Used?**  
+
+| **Service**          | **Use Sharding?** | **Why?** |
+|----------------------|------------------|----------|
+| **Order Service**    | ✅ Yes | Order volume is huge, needs scalability. Can be **sharded by User ID or Order ID**. |
+| **Cart Service**     | ✅ Yes | Session-based, short-lived data. Sharded by **User ID** for faster retrieval. |
+| **Product Catalog**  | ✅ Yes | Millions of products, sharded by **Category ID or Product ID**. |
+| **Driver Service** (for delivery) | ✅ Yes | Large number of delivery agents, sharded by **Geographical Regions** (e.g., city/state). |
+| **Ad Service**       | ✅ Yes | Ad impressions are high-scale, can be **sharded by Campaign ID**. |
+| **User Service**     | ✅ Yes | Many users, sharded by **User ID** to balance load. |
+| **Review Service**   | ✅ Yes | Large number of reviews, can be **sharded by Product ID**. |
+
+---
+
+## **🔻 Where Will Sharding NOT Be Used?**  
+
+| **Service**            | **Use Sharding?** | **Why Not?** |
+|------------------------|------------------|--------------|
+| **Payment Service**    | ❌ No  | Payments need **strong consistency & ACID transactions**. RDBMS (MySQL/PostgreSQL) is better. |
+| **Wallet/Balance Service** | ❌ No  | User balances require **ACID transactions**; should not be distributed. |
+| **Inventory Service**  | ❌ No (or Limited)  | Stock count needs consistency, so it’s usually **replicated, not sharded**. |
+| **Authentication Service (Auth & Tokens)** | ❌ No  | Authentication tokens are usually stored in a **distributed cache (Redis)** rather than a sharded database. |
+
+---
+
+## **🔹 How to Shard Different Services?**  
+
+### **1️⃣ User-Based Sharding (Good for User-Specific Data)**  
+- **Used in**: Orders, Cart, User Profiles  
+- **How?**  
+  - User IDs are evenly distributed across shards (e.g., Modulo Hashing → `UserID % N`).  
+  - Ensures **all user-related data stays in the same shard**.  
+
+### **2️⃣ Order ID-Based Sharding (Ensures Scalability)**  
+- **Used in**: Order Service  
+- **How?**  
+  - Orders are **write-heavy**. Using Order ID as the sharding key ensures **fast writes**.  
+
+### **3️⃣ Category/Product ID-Based Sharding (Good for Catalogs & Reviews)**  
+- **Used in**: Product Catalog, Review Service  
+- **How?**  
+  - Products and reviews are **read-heavy**.  
+  - Sharding by **Category ID or Product ID** keeps related data together.  
+
+### **4️⃣ Geographical Sharding (Best for Location-Based Services)**  
+- **Used in**: Driver Service, Delivery Tracking  
+- **How?**  
+  - Shard by **Region (e.g., City, State, Country)** to keep location-based data close.  
+
+---
+
+## **🚀 What Happens in Failure?**
+- **Order Service:** If an Order Shard goes down → Use **replicated nodes** to recover.  
+- **Driver Service:** If a Region-Based Shard fails → The nearest region takes over.  
+- **Payment Service:** Uses **failover to another RDBMS instance**, not sharding.  
+
+---
+
+## **🔥 Conclusion**
+- **Use Sharding for scalability:** Orders, Products, Cart, Drivers, Ads, Reviews.  
+- **Use ACID-compliant DBs for consistency:** Payments, Balances, Authentication, Inventory.  
+- **Use caching (Redis) for session-based data:** Authentication Tokens, Product Searches.  
+
+---
+
+This setup ensures **scalability** for high-traffic services while keeping **critical services consistent**. 🚀

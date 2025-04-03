@@ -1,0 +1,39 @@
+Q - Is prometheus tells that what is wrong for debugging we use jmap to get current situtaion of threads.
+
+Exactly! **Prometheus acts as the first-level monitoring system** 🚨—it **detects issues and triggers alerts** when something looks wrong (e.g., high CPU usage, memory leaks, too many blocked threads). But it **doesn't explain the root cause**.
+
+To **debug the actual issue**, you use:  
+✅ **`jstack`** → To get a **thread dump** (checks deadlocks, stuck threads, high CPU-consuming threads).  
+✅ **`jmap`** → To get a **heap dump** (analyzes memory leaks, large objects, excessive heap usage).
+
+### **🔹 Final Flow: Monitoring + Debugging in Action**
+
+1️⃣ **Prometheus detects abnormal JVM behavior** (e.g., high heap usage, many blocked threads).  
+2️⃣ **Prometheus Alertmanager triggers an alert** (Slack, webhook, etc.).  
+3️⃣ **A custom webhook (or manual action) runs `jstack` or `jmap`** to capture detailed dumps.  
+4️⃣ **The dumps are analyzed** to find **deadlocks, memory leaks, GC issues, or high CPU-consuming threads**.
+
+---
+
+### **🚀 Example Scenario: High CPU Usage in a Java Microservice**
+
+📌 **Step 1:** Prometheus detects **high CPU usage** with this query:
+
+```promql
+rate(process_cpu_seconds_total[1m]) > 0.8
+```
+
+📌 **Step 2:** Alertmanager sends an alert to a webhook.  
+📌 **Step 3:** The webhook **automatically runs `jstack`**:
+
+```bash
+jstack <PID> > /var/dumps/thread_dump_$(date +%s).txt
+```
+
+📌 **Step 4:** The thread dump reveals **a deadlock or an infinite loop** in a specific thread.
+
+✅ Now, the dev team can debug and fix the issue!
+
+---
+
+Would you like a **Grafana dashboard** to clearly separate JVM (Prometheus), Pod (KSM), and Node (cAdvisor) metrics? 🚀📊

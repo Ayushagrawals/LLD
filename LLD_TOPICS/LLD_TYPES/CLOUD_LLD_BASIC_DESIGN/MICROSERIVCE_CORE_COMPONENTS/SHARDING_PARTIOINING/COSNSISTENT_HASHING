@@ -1,0 +1,69 @@
+Yes, what I described earlier as **"Hash-Based Sharding"** can be extended to **Consistent Hashing**, which is a more advanced and **fault-tolerant** approach.  
+
+---
+
+### **🚀 How Consistent Hashing Works in Sharding?**  
+**💡 Problem with Simple Hash-Based Sharding:**  
+- If we use `hash(user_id) % N (shards)`, then **adding or removing a shard causes massive reshuffling** of data.  
+- Example: If we go from **5 shards → 6 shards**, almost all keys are reassigned, causing a **domino effect** (data must be redistributed).  
+
+**✅ Solution: Consistent Hashing**  
+- Instead of `mod(N)`, **each shard is assigned to a point on a circular hash space (0-2^32)**.  
+- Each **user_id or order_id is also hashed** and mapped to the nearest shard **clockwise**.  
+- If a shard **fails**, its data is automatically distributed to the next available shard **without affecting others**.  
+- If a **new shard is added**, it only takes part of the data instead of reshuffling everything.  
+
+---
+
+### **🎯 Example: Handling Failover in Consistent Hashing**  
+
+Imagine we have **3 shards** (**Shard A, B, C**) mapped on a **hash ring**:  
+```
+    0 ----> Shard A (0-120)
+    |      
+    | (User X → Hash 105 → Shard A)
+    |
+   120 ----> Shard B (120-240)
+    |
+    | (User Y → Hash 200 → Shard B)
+    |
+   240 ----> Shard C (240-360)
+```
+
+#### **🛑 Scenario: What Happens If Shard B Fails?**  
+- In traditional hashing (`mod N`), we would have to **recompute the hash for all users**, which is costly.  
+- In **consistent hashing**, only users mapped to **Shard B** will get reassigned to **Shard C** (next clockwise shard).  
+- No other shards are affected, **preventing a domino effect**.  
+
+---
+
+### **🔥 Why Use Consistent Hashing in Large-Scale Distributed Systems?**  
+✅ **Automatic Failover:** If a shard goes down, only its data moves to the next shard.  
+✅ **Minimal Data Movement:** Adding/removing shards **does not trigger global reshuffling**.  
+✅ **Load Balancing:** The system can distribute load dynamically as nodes join or leave.  
+✅ **Used in:** AWS DynamoDB, Apache Cassandra, and Distributed Caching Systems (e.g., Memcached, Redis Cluster).  
+
+---
+
+### **🤔 How Would You Answer in an Interview?**  
+
+**Question:**  
+*"How do you design a scalable sharding strategy for an e-commerce platform? What if a shard fails?"*  
+
+✅ **Start with Simple Hash-Based Sharding**  
+- *"Initially, we can use `hash(user_id) % N (shards)`, but this has a problem when we scale up/down."*  
+
+✅ **Then, Explain Consistent Hashing for Fault Tolerance**  
+- *"To avoid massive data reshuffling, we use a **consistent hashing ring**. This ensures that only a small fraction of data moves when shards fail or scale up."*  
+
+✅ **Mention How Failover Happens**  
+- *"When a shard fails, its users/orders are **automatically mapped to the next shard** on the ring, avoiding a system-wide failure."*  
+
+✅ **Bonus: Talk About Replication for Extra HA**  
+- *"For high availability, each shard has a **replica** so that even if one shard fails, its data is still available."*  
+
+---
+
+🎯 **Key Takeaway**  
+👉 **Consistent Hashing = Minimal Data Movement + Automatic Failover + Scalability**  
+👉 **Used in NoSQL Databases, Distributed Caches, and Scalable Microservices**

@@ -1,0 +1,99 @@
+Yes! These **partitioning and indexing concepts** apply to various **NoSQL databases**, but **the implementation differs** based on how each database handles **sharding, partitioning, and indexing**.
+
+---
+
+# **🔹 How These Concepts Apply to Different NoSQL Databases**
+
+| Feature                          | **DynamoDB**                                                          | **MongoDB**                                    | **Cassandra**                                              | **HBase** |
+| **Partition Key**                | Used for **automatic** sharding (hashed to decide storage partition). | Used in **shard key** to distribute documents. | Used as **partition key** to distribute rows across nodes. | Used as **row key** (data stored in HDFS-like system). |
+| **Sort Key**                     | Helps store related items **within a partition**.                     | Not applicable (documents are independent).    | Helps **distribute data within a partition**.              | Determines data order in a region. |
+| **Global Secondary Index (GSI)** | Allows **querying across shards**.                                    | Indexes on **any field** to speed up queries.  | Allows **querying on non-primary keys**.                   | Uses **secondary indexes** for fast lookup. |
+| **Local Secondary Index (LSI)**  | Optimizes access within the same partition.                           | Not applicable (indexes are independent).      | Uses **clustering columns** for ordering.                  | Uses **column families** for storage. |
+
+---
+
+## **🔹 NoSQL Databases & Their Sharding Strategies**
+
+Each NoSQL database uses **different sharding strategies**:
+
+| NoSQL Database | **Sharding Strategy**                                                           |
+| -------------- | ------------------------------------------------------------------------------- |
+| **DynamoDB**   | **Automatic hashing** based on partition key (`user_id % num_shards`).          |
+| **MongoDB**    | Uses **shard key** (range-based, hashed, or zoned sharding).                    |
+| **Cassandra**  | Uses **consistent hashing** (distributed ring model).                           |
+| **HBase**      | Uses **range-based partitioning** (region servers handle row key distribution). |
+
+---
+
+## **🔹 Example: How Sharding Works in Different Databases**
+
+Let's take an **e-commerce database storing user orders**:
+
+### **1️⃣ DynamoDB Sharding Example**
+
+- **Partition Key**: `user_id`
+- **Sort Key**: `order_id`
+- **Sharding Mechanism**: Hash-based (`user_id % num_shards`)
+
+```python
+# Query orders for a specific user
+table.query(KeyConditionExpression=Key('user_id').eq(123))
+```
+
+📌 **DynamoDB automatically distributes this across partitions based on `user_id`.**
+
+---
+
+### **2️⃣ MongoDB Sharding Example**
+
+- **Shard Key**: `{ "user_id": 1 }`
+- **Sharding Strategy**: Hashed or Range-based
+
+```javascript
+sh.shardCollection("ecommerce.orders", { user_id: "hashed" });
+```
+
+📌 **Documents with the same `user_id` may be stored on the same or different shards.**
+
+---
+
+### **3️⃣ Cassandra Sharding Example**
+
+- **Partition Key**: `user_id`
+- **Clustering Key (Sort Key equivalent)**: `order_id`
+- **Sharding Mechanism**: Consistent hashing on `user_id`
+
+```cql
+CREATE TABLE orders (
+    user_id BIGINT,
+    order_id BIGINT,
+    total_price DECIMAL,
+    PRIMARY KEY (user_id, order_id)
+);
+```
+
+📌 **Data is distributed in a ring using consistent hashing** (no manual sharding needed).
+
+---
+
+### **4️⃣ HBase Sharding Example**
+
+- **Row Key**: `user_id + order_id`
+- **Sharding Mechanism**: Region-based partitioning
+
+```shell
+create 'orders', { NAME => 'details', VERSIONS => 1 }
+```
+
+📌 **HBase splits regions dynamically based on row key distribution.**
+
+---
+
+## **🔹 Summary**
+
+- **Partition Key (`user_id`)** → Used for **sharding** in DynamoDB, Cassandra, MongoDB.
+- **Sort Key (`order_id`)** → Used to **group related data** in DynamoDB, Cassandra.
+- **Indexes (GSI, LSI)** → Used for **efficient queries across shards**.
+- **Sharding Mechanism** → **Hashing vs. Range-based vs. Consistent Hashing**.
+
+📌 **Understanding these concepts helps in designing scalable NoSQL databases across different technologies.** 🚀

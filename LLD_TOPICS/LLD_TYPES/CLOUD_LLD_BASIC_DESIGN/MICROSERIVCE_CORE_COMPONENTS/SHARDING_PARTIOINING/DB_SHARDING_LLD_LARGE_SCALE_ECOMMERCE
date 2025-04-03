@@ -1,0 +1,138 @@
+### **LLD: Designing a Sharded Database for a Large-Scale E-Commerce System**  
+
+📌 **Problem Statement:**  
+You need to design a highly scalable database system for an e-commerce platform that handles millions of users and transactions. The system should support **high availability, fault tolerance, and efficient querying**.  
+
+---
+
+## **1️⃣ Key Considerations Before Sharding**  
+✅ **Why sharding?**  
+- A **single database instance** cannot handle millions of concurrent users efficiently.  
+- **Read and write operations** will become slow as data grows.  
+- Database locks will degrade performance during high-traffic events (e.g., Black Friday sales).  
+
+✅ **Challenges to Address**  
+- How to distribute data across shards?  
+- How to maintain **consistency and transactions** across shards?  
+- How to **query and join data efficiently**?  
+- How to **handle failures and replication**?  
+
+---
+
+## **2️⃣ Sharding Strategies**  
+
+**🔹 Option 1: Range-Based Sharding (Not Recommended for High-Traffic Use Cases)**  
+📌 *Split database by user ID ranges (e.g., 1M users per shard)*  
+🚫 Problem: Some shards will become hotspots (popular users may all land in one shard).  
+
+**🔹 Option 2: Hash-Based Sharding (Recommended for Load Balancing)**  
+📌 *Distribute data based on a **hashed shard key** (e.g., `hash(user_id) % number_of_shards`).*  
+✅ **Pros:** Even distribution of traffic, prevents hotspots.  
+✅ **Cons:** Harder to perform range queries (e.g., "Find all orders for last 7 days").  
+
+**🔹 Option 3: Directory-Based Sharding (Flexible but Complex)**  
+📌 *A lookup service maintains a mapping between users and shards.*  
+✅ **Pros:** Shard location is flexible and can be changed dynamically.  
+🚫 **Cons:** The lookup service can become a **single point of failure**.  
+
+📢 **Best Strategy for E-Commerce:** **Hybrid Approach (Hash + Directory-Based Sharding)**  
+- **User data**: Use **hash-based sharding** on `user_id` for even distribution.  
+- **Order data**: Use **directory-based sharding**, mapping `order_id` to specific shards.  
+- **Product catalog**: Store in a **NoSQL database** like DynamoDB for fast retrieval.  
+
+---
+
+## **3️⃣ System Design Components**  
+
+### **📍 Primary Database Architecture**  
+| Table | Shard Key | Sharding Strategy |  
+|--------|-----------|-------------------|  
+| Users | `hash(user_id) % N` | Hash-Based |  
+| Orders | `order_id` (stored in lookup table) | Directory-Based |  
+| Inventory | `product_id` | Range-Based |  
+
+### **📍 Query Routing (How Do We Access Shards?)**  
+- Use an **API Gateway** that **routes queries** based on the shard key.  
+- Implement a **shard-aware application layer** that knows where to send each query.  
+- A **centralized metadata service** (e.g., Zookeeper) can maintain the **shard mapping** dynamically.  
+
+### **📍 Handling Transactions Across Shards**  
+Problem: Transactions span multiple shards (e.g., a user purchases items from different warehouses).  
+✅ **Solution:** Use **SAGA Pattern** instead of 2PC (Two-Phase Commit).  
+✅ Each step in the transaction is **compensatable** in case of failure.  
+
+---
+
+## **4️⃣ Replication & High Availability**  
+✅ **Primary-Replica Architecture**  
+- Each shard has **1 Primary Node** and **multiple Read Replicas**.  
+- Writes go to the **Primary**, and reads are distributed across **Replicas**.  
+- If a **Primary fails**, a **Replica is promoted** automatically (via AWS RDS Multi-AZ).  
+
+✅ **Cold Storage for Old Orders**  
+- Orders **older than 1 year** are moved to **AWS Glacier** for archival.  
+- AWS Lambda triggers move old data **automatically** to reduce load on primary DB.  
+
+✅ **Cache for Frequent Queries**  
+- **Redis (ElastiCache)** caches frequent read queries (e.g., user profiles, product catalog).  
+- **CDN (CloudFront)** caches product images to reduce DB and application load.  
+
+---
+
+## **5️⃣ Failure Handling & Disaster Recovery**  
+🚨 **What happens if a shard fails?**  
+✅ Replication ensures that **read queries** still work.  
+✅ A **Failover Mechanism (AWS RDS Multi-AZ, Kubernetes StatefulSets)** ensures that a **new Primary** is elected.  
+✅ A **backup strategy** (daily snapshot + WAL logs) helps recover lost data.  
+
+---
+
+## **6️⃣ Monitoring & Observability**  
+✅ **AWS CloudWatch & Prometheus**: Monitor **database CPU, memory, and slow queries**.  
+✅ **ELK Stack (Elasticsearch, Logstash, Kibana)**: Aggregates logs from all shards.  
+✅ **Jaeger / OpenTelemetry**: Enables **Distributed Tracing** for cross-shard queries.  
+
+---
+
+## **7️⃣ Final Architecture Diagram (High-Level Overview)**  
+
+📌 **Main Components**:  
+🔹 **Users, Orders, Inventory (Sharded DBs)**  
+🔹 **API Gateway (Query Router)**  
+🔹 **SAGA Pattern for Cross-Shard Transactions**  
+🔹 **ElastiCache (Caching Layer)**  
+🔹 **CloudWatch, Prometheus (Monitoring)**  
+🔹 **AWS Glacier (Cold Storage for Old Orders)**  
+🔹 **Read Replicas for Scalability**  
+
+```
++------------+          +----------------------+
+|  User App  |  ----->  |   API Gateway        |
++------------+          +----------------------+
+                                |
++------------------------+   +---------------------------+
+|    Query Router       |--> |  Sharded Databases       |
++------------------------+   |  (Primary & Replicas)    |
+                             +---------------------------+
++------------------------+   +---------------------------+
+|  ElastiCache (Redis)  |--->|  Cache Layer (Fast Reads) |
++------------------------+   +---------------------------+
++------------------------+   +---------------------------+
+|  AWS Glacier (Cold)   |--->|  Archival of Old Orders   |
++------------------------+   +---------------------------+
+```
+
+---
+
+## **Conclusion: Answering the Interview Question**  
+💡 **Summary of Your Answer:**  
+1️⃣ **Sharding Approach:** Hash-Based for Users, Directory-Based for Orders, Range-Based for Inventory.  
+2️⃣ **Query Routing:** API Gateway + Query Router maps requests to correct shards.  
+3️⃣ **Transactions:** Use **SAGA pattern** to avoid distributed locks.  
+4️⃣ **Scaling:** Read replicas, caching (Redis), archival storage (AWS Glacier).  
+5️⃣ **Failure Handling:** Replication, automated failover, monitoring (CloudWatch, Prometheus).  
+
+---
+
+🎯 **Key Takeaway:**  
+👉 If you answer using **this structured approach (Sharding + HA + Query Routing + Monitoring)**, you will stand out in **database system design interviews**! 🚀
