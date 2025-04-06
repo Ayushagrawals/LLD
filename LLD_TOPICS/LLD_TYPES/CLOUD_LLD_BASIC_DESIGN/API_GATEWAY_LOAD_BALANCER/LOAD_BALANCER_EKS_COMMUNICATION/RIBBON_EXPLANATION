@@ -1,0 +1,74 @@
+You're asking an excellent and nuanced question — about **how Ribbon interacts with Eureka**, **where the load balancing happens**, and how it compares to **service discovery/load balancing in EKS**. Let’s break this down and make it crystal clear:
+
+---
+
+### 🔁 **Ribbon + Eureka** (Typical in Spring Cloud Netflix Stack)
+
+- **Eureka** is the **service registry**: every microservice registers itself here.
+- **Ribbon** is the **client-side load balancer**.
+
+#### How it works (Step-by-step):
+
+1. **Your microservice (let's say Service A)** wants to call **Service B**.
+2. **Ribbon client inside Service A** asks **Eureka**:  
+   👉 “Give me a list of healthy instances of Service B.”
+3. Eureka responds with:  
+   `[{ip1:port1}, {ip2:port2}, ...]`
+4. Ribbon **does client-side load balancing** (round-robin, random, etc.) and picks one.
+5. Service A sends the request **directly** to the chosen instance of Service B.
+
+💡 So **each client microservice (caller)** has its own embedded Ribbon load balancer.
+
+> ✔️ This means: **Load balancing is done at the caller side**, not in the network layer. Every microservice (that acts as a client) maintains its own logic to pick a healthy instance to call.
+
+---
+
+### 🧭 Compared to **EKS (Kubernetes)** world
+
+In **Kubernetes (like EKS)**, service discovery and load balancing are typically **handled by the platform**, not at client side.
+
+#### How it works in EKS:
+
+1. Services are registered as **Kubernetes Services** (`ClusterIP`, `NodePort`, `LoadBalancer`, etc.).
+2. When you call `http://service-b.namespace.svc.cluster.local`, Kubernetes **DNS + kube-proxy or iptables** resolves it to a set of pod IPs.
+3. Kubernetes **load balances** across those pod IPs using **round-robin (iptables/ebpf)**.
+4. Health checks and restarts are managed by **Kubelet + readiness/liveness probes**.
+
+So in EKS:
+- The load balancing is **server-side**, managed by Kubernetes Service abstraction.
+- You don’t need Ribbon or Eureka — **Kubernetes + CoreDNS** replaces both.
+
+---
+
+### 🌐 Summary: Key Differences
+
+| Feature | Ribbon + Eureka | EKS (Kubernetes) |
+|--------|------------------|------------------|
+| Load Balancer | Client-side (Ribbon) | Server-side (K8s Service) |
+| Service Registry | Eureka | Kubernetes DNS |
+| Health Checks | Eureka + App Health | Kubernetes probes |
+| Load Balancer Per Service? | Yes, embedded in caller | No, shared by K8s Service |
+| Who picks instance to call? | Caller (Ribbon logic) | Kubernetes (Service routing) |
+
+---
+
+### 🧠 Answering your questions:
+
+> ❓ “For each microservice do we have load balancer (Ribbon)?”
+
+✅ Yes, every **client microservice** that makes calls to others has its own Ribbon logic.
+
+> ❓ “Is it once consumed part, does it send to others?”
+
+❌ No. The response from Service B goes **directly back** to Service A. Ribbon doesn’t act as a proxy or intermediate forwarder. It just **chooses an instance** to call.
+
+> ❓ “In EKS, is this taken care of?”
+
+✅ Yes! In EKS:
+- Kubernetes DNS + kube-proxy handles discovery and routing.
+- You don’t need Ribbon or Eureka.
+- Calls are made to stable DNS names and automatically routed to healthy pods.
+
+---
+
+Would you like me to show this with a diagram comparing the two?
